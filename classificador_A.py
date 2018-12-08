@@ -71,6 +71,20 @@ def gerarModelo():
 def treinarRedeNeural():
 	dataset, vetor_resposta, dicionario = getDadosTreino()
 	
+	#monta os dados de treino
+	X = []
+	for frase in dataset:
+		frase_atual = [0]*tamanho_maximo_texto
+		for i, palavra in enumerate(frase):
+			if i >= tamanho_maximo_texto:
+				break
+			if palavra in dicionario:
+				frase_atual[i] = dicionario[palavra]
+		X.append(frase_atual)
+	X = numpy.array(X, dtype=numpy.int32)
+	X.reshape((len(dataset), tamanho_maximo_texto, 1))
+
+	Y = vetor_resposta
 
 	#monta a rede neural
 	model = gerarModelo()
@@ -78,18 +92,7 @@ def treinarRedeNeural():
 	model.compile(loss='cosine_proximity',optimizer='adam',metrics=['accuracy'])
 	model.summary()
 	
-	#monta os dados de treino
-	X = []
-	for frase in dataset:
-		for palavra in frase:
-			if palavra in dicionario:
-				X.append(dicionario[palavra])
-			else:
-				X.append(0)
-	X = numpy.array(X, dtype=numpy.int32)
-	X.reshape((len(dataset), tamanho_maximo_texto, 1))
 
-	Y = vetor_resposta
 	model.fit(X, Y, epochs=60, batch_size=500, validation_split=0.6, verbose=1)
 	
 	model.save("meme")
