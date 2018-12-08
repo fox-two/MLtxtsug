@@ -63,7 +63,7 @@ def gerarModelo():
 	model.add(embedding_layer)
 	model.add(Bidirectional(LSTM(64, dropout=0.2, recurrent_dropout=0.2, return_sequences=True)))
 	model.add(Attention(tamanho_maximo_texto))
-	model.add(Dense(100))
+	model.add(Dense(300))
 	model.add(Dropout(0.2))
 	model.add(Dense(vectorizer.num_topics,activation='tanh'))
 	return model
