@@ -15,27 +15,29 @@ def convert2dense(sparse, size):
 	return vect
 
 class vectorizer:
-	num_topics = 500
+	num_topics = 5000
 	def __init__(self):
 		pass
 	
 	def fit_transform(self, data):
 		data = [simple_preprocess(x, deacc=True) for x in data]
 
-		phrases = Phrases(data, min_count=1, threshold=10)
+		phrases = Phrases(data,  threshold=10)
 		self.phraser = Phraser(phrases)
 		data = self.phraser[data]
 
 		self.dct = Dictionary(data) 
+		self.dct.filter_extremes(keep_n=self.num_topics)
 		docs_bow = [self.dct.doc2bow(line) for line in data]
 
 		self.tfidf = TfidfModel(docs_bow)
 		vectors = list(self.tfidf[docs_bow])
 
-		self.lsimodel = LsiModel(corpus=vectors, num_topics=self.num_topics)
+		self.lsimodel = None
+#		self.lsimodel = LsiModel(corpus=vectors, num_topics=self.num_topics)
 
 
-		retorno = [convert2dense(x, self.num_topics) for x in self.lsimodel[vectors]]
+		retorno = [convert2dense(x, self.num_topics) for x in vectors]
 		
 		return retorno
 
@@ -44,4 +46,4 @@ class vectorizer:
 		text = simple_preprocess(text, deacc=True)
 		palavras = self.phraser[text]
 		bow = self.dct.doc2bow(palavras)
-		return convert2dense(self.lsimodel[self.tfidf[bow]], 500)
+		#return convert2dense(self.lsimodel[self.tfidf[bow]], 500)
