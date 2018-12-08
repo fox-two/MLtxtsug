@@ -61,11 +61,11 @@ def gerarModelo():
 		                        embedding_matrix.shape[1], 
 		                        weights=[embedding_matrix], trainable=True, input_length=tamanho_maximo_texto)
 	model.add(embedding_layer)
-	model.add(Bidirectional(LSTM(64, dropout=0.2, recurrent_dropout=0.2, return_sequences=True)))
+	model.add(Bidirectional(LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True)))
 	model.add(Attention(tamanho_maximo_texto))
-	model.add(Dense(1000))
+	model.add(Dense(500))
 	model.add(Dropout(0.2))
-	model.add(Dense(vectorizer.num_topics,activation='tanh'))
+	model.add(Dense(vectorizer.num_topics,activation='sigmoid'))
 	return model
 
 def treinarRedeNeural():
@@ -89,7 +89,7 @@ def treinarRedeNeural():
 	#monta a rede neural
 	model = gerarModelo()
 
-	model.compile(loss='cosine_proximity',optimizer='adam',metrics=['accuracy'])
+	model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 	model.summary()
 	
 

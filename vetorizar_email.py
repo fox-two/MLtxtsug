@@ -10,7 +10,7 @@ def convert2dense(sparse, size):
 	vect = [0]*size
 
 	for item in sparse:
-		vect[item[0]] = item[1]
+		vect[item[0]] = 1
 	
 	return vect
 
@@ -30,14 +30,14 @@ class vectorizer:
 		self.dct.filter_extremes(keep_n=self.num_topics)
 		docs_bow = [self.dct.doc2bow(line) for line in data]
 
-		self.tfidf = TfidfModel(docs_bow)
-		vectors = list(self.tfidf[docs_bow])
+		#self.tfidf = TfidfModel(docs_bow)
+		#vectors = list(self.tfidf[docs_bow])
 
 		self.lsimodel = None
 #		self.lsimodel = LsiModel(corpus=vectors, num_topics=self.num_topics)
 
 
-		retorno = [convert2dense(x, self.num_topics) for x in vectors]
+		retorno = [convert2dense(x, self.num_topics) for x in docs_bow]
 		
 		return retorno
 
